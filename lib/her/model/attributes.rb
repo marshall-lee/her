@@ -187,19 +187,17 @@ module Her
           define_attribute_methods attributes
 
           attributes.each do |attribute|
-            attribute = attribute.to_sym
-
-            unless method_defined?(:"#{attribute}=")
+            unless method_defined?("#{attribute}=")
               define_method("#{attribute}=") do |value|
-                @attributes[:"#{attribute}"] = nil unless @attributes.include?(:"#{attribute}")
-                self.send(:"#{attribute}_will_change!") if @attributes[:'#{attribute}'] != value
-                @attributes[:"#{attribute}"] = value
+                @attributes[attribute] = nil unless @attributes.include?(attribute)
+                self.send("#{attribute}_will_change!") if @attributes[attribute] != value
+                @attributes[attribute] = value
               end
             end
 
-            unless method_defined?(:"#{attribute}?")
+            unless method_defined?("#{attribute}?")
               define_method("#{attribute}?") do
-                @attributes.include?(:"#{attribute}") && @attributes[:"#{attribute}"].present?
+                @attributes.include?(attribute) && @attributes[attribute].present?
               end
             end
           end
