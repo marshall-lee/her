@@ -19,7 +19,7 @@ task :benchmark do
     stub.get('/tamago') { |env| [200, {}, 'egg'] }
   end
 
-  big_array = 1_000.times.map do |i|
+  big_array = 10_000.times.map do |i|
     {
       id: i,
       email: "user#{i}@example.com",
