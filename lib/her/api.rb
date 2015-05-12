@@ -14,6 +14,11 @@ module Her
       @default_api.setup(opts, &block)
     end
 
+    def self.setup_pool(pool_size, opts={}, &block)
+      @default_api = new
+      @default_api.setup_pool(pool_size, opts, &block)
+    end
+
     # Create a new API object. This is useful to create multiple APIs and use them with the `uses_api` method.
     # If your application uses only one API, you should use Her::API.setup to configure the default API
     #
@@ -77,6 +82,20 @@ module Her
       faraday_options = @options.reject { |key, value| !FARADAY_OPTIONS.include?(key.to_sym) }
       @connection = Faraday.new(faraday_options) do |connection|
         yield connection if block_given?
+      end
+      self
+    end
+
+    def setup_pool(pool_size, opts={}, &blk)
+      require 'connection_pool'
+
+      opts[:url] = opts.delete(:base_uri) if opts.include?(:base_uri) # Support legacy :base_uri option
+      @base_uri = opts[:url]
+      @options = opts
+
+      faraday_options = @options.reject { |key, value| !FARADAY_OPTIONS.include?(key.to_sym) }
+      @connection = ConnectionPool::Wrapper.new(size: pool_size) do
+        Faraday.new(faraday_options, &blk)
       end
       self
     end
