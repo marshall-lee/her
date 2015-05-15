@@ -16,11 +16,12 @@ task :benchmark_pool do
   require 'benchmark'
 
   class Suite
-    def initialize(url)
+    def initialize(url, adapter)
       @url = url
+      @adapter = adapter
     end
 
-    attr_reader :url
+    attr_reader :url, :adapter
     attr_accessor :use_pool
 
     def warming(*)
@@ -70,10 +71,7 @@ task :benchmark_pool do
         c.use Her::Middleware::DefaultParseJSON
 
         # Adapter
-        # c.use Faraday::Adapter::Patron
-        # c.use Faraday::Adapter::NetHttpPersistent
-        # c.use Faraday::Adapter::HTTPClient
-        c.use Faraday::Adapter::Typhoeus
+        c.use adapter
       end
       new_class = Class.new
       Object.const_set :User, new_class
@@ -90,10 +88,7 @@ task :benchmark_pool do
         c.use Her::Middleware::DefaultParseJSON
 
         # Adapter
-        # c.use Faraday::Adapter::Patron
-        # c.use Faraday::Adapter::NetHttpPersistent
-        # c.use Faraday::Adapter::HTTPClient
-        c.use Faraday::Adapter::Typhoeus
+        c.use adapter
       end
       new_class = Class.new
       Object.const_set :User, new_class
@@ -102,7 +97,10 @@ task :benchmark_pool do
     end
   end
 
-  suite = Suite.new 'http://localhost:9292'
+  # suite = Suite.new 'http://localhost:9292', Faraday::Adapter::Patron
+  # suite = Suite.new 'http://localhost:9292', Faraday::Adapter::Typhoeus
+  # suite = Suite.new 'http://localhost:9292', Faraday::Adapter::NetHttpPersistent
+  suite = Suite.new 'http://localhost:9292', Faraday::Adapter::HTTPClient
 
   suite.use_pool = false
   suite.setup!
