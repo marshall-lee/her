@@ -97,6 +97,7 @@ task :benchmark_pool do
     end
   end
 
+  # suite = Suite.new 'http://localhost:9292', Faraday::Adapter::NetHttp
   # suite = Suite.new 'http://localhost:9292', Faraday::Adapter::Patron
   # suite = Suite.new 'http://localhost:9292', Faraday::Adapter::Typhoeus
   # suite = Suite.new 'http://localhost:9292', Faraday::Adapter::NetHttpPersistent
