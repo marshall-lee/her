@@ -26,6 +26,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency "patron", "~> 0.4.20"
   s.add_development_dependency "httpclient"
   s.add_development_dependency "excon"
+  s.add_development_dependency "typhoeus"
+  s.add_development_dependency "faraday"
   s.add_development_dependency "net-http-persistent"
 
   s.add_runtime_dependency "activemodel", ">= 3.0.0", "<= 4.2.1"

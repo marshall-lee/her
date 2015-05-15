@@ -11,6 +11,7 @@ RSpec::Core::RakeTask.new(:spec) do |task|
 end
 
 task :benchmark_pool do
+  require 'typhoeus/adapters/faraday'
   require 'her'
   require 'benchmark'
 
@@ -71,7 +72,8 @@ task :benchmark_pool do
         # Adapter
         # c.use Faraday::Adapter::Patron
         # c.use Faraday::Adapter::NetHttpPersistent
-        c.use Faraday::Adapter::HTTPClient
+        # c.use Faraday::Adapter::HTTPClient
+        c.use Faraday::Adapter::Typhoeus
       end
       new_class = Class.new
       Object.const_set :User, new_class
@@ -90,7 +92,8 @@ task :benchmark_pool do
         # Adapter
         # c.use Faraday::Adapter::Patron
         # c.use Faraday::Adapter::NetHttpPersistent
-        c.use Faraday::Adapter::HTTPClient
+        # c.use Faraday::Adapter::HTTPClient
+        c.use Faraday::Adapter::Typhoeus
       end
       new_class = Class.new
       Object.const_set :User, new_class
@@ -103,15 +106,15 @@ task :benchmark_pool do
 
   suite.use_pool = false
   suite.setup!
-  # puts 'measure single threaded'
-  # puts Benchmark.realtime { 1000.times { suite.fetch_one_user } }
+  puts 'measure single threaded'
+  puts Benchmark.realtime { 1000.times { suite.fetch_one_user } }
   puts 'measure multi threaded'
   puts Benchmark.realtime { 100.times.map { Thread.new { 10.times { suite.fetch_one_user } } }.each(&:join) }
 
   suite.use_pool = true
   suite.setup!
-  # puts 'measure single threaded'
-  # puts Benchmark.realtime { 1000.times { suite.fetch_one_user } }
+  puts 'measure single threaded'
+  puts Benchmark.realtime { 1000.times { suite.fetch_one_user } }
   puts 'measure multi threaded'
   puts Benchmark.realtime { 100.times.map { Thread.new { 10.times { suite.fetch_one_user } } }.each(&:join) }
 
